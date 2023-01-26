@@ -32,6 +32,6 @@ async def send_photo_to_telegram(photo_url, photo_photographer):
 
 if __name__ == '__main__':
     while True:
-        photo_url, photo_photographer = await fetch_photos()
-        await send_photo_to_telegram(photo_url, photo_photographer)
+        photo_url, photo_photographer = fetch_photos()
+        send_photo_to_telegram(photo_url, photo_photographer)
         time.sleep(3600) # wait for 1 hour before fetching and sending another photo
