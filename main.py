@@ -7,9 +7,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = os.getenv("PEXELS_API_KEY")
-bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
-channel_id = os.getenv("TELEGRAM_CHANNEL_ID")
+api_key = os.environ.get("PEXELS_API_KEY")
+bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
+channel_id = os.environ.get("TELEGRAM_CHANNEL_ID")
 
 
 def fetch_photos():
@@ -27,7 +27,8 @@ def send_photo_to_telegram(photo_url, photo_photographer):
     bot.send_photo(chat_id=channel_id, photo=photo_url, caption=photo_photographer)
 
 
-while True:
-    photo_url, photo_photographer = fetch_photos()
-    send_photo_to_telegram(photo_url, photo_photographer)
-    time.sleep(10) # wait for 1 hour before fetching and sending another photo
+if __name__ == '__main__':
+    while True:
+        photo_url, photo_photographer = fetch_photos()
+        send_photo_to_telegram(photo_url, photo_photographer)
+        time.sleep(3600) # wait for 1 hour before fetching and sending another photo
