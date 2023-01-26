@@ -12,7 +12,7 @@ bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
 channel_id = os.environ.get("TELEGRAM_CHANNEL_ID")
 
 
-def fetch_photos():
+async def fetch_photos():
     url = f'https://api.pexels.com/v1/curated?per_page=1&page=1'
     headers = {'Authorization': api_key}
     response = requests.get(url, headers=headers)
@@ -22,13 +22,16 @@ def fetch_photos():
     return photo_url, photo_photographer
 
 
-def send_photo_to_telegram(photo_url, photo_photographer):
+async def send_photo_to_telegram(photo_url, photo_photographer):
     bot = Bot(token=bot_token)
-    bot.send_photo(chat_id=channel_id, photo=photo_url, caption=photo_photographer)
+    try:
+        await bot.send_photo(chat_id=channel_id, photo=photo_url, caption=photo_photographer)
+    except Exception as e:
+        print("An error occurred: ", e)
 
 
 if __name__ == '__main__':
     while True:
-        photo_url, photo_photographer = fetch_photos()
-        send_photo_to_telegram(photo_url, photo_photographer)
+        photo_url, photo_photographer = await fetch_photos()
+        await send_photo_to_telegram(photo_url, photo_photographer)
         time.sleep(3600) # wait for 1 hour before fetching and sending another photo
