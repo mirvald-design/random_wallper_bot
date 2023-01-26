@@ -33,8 +33,12 @@ async def send_photo_to_telegram(photo_url, photo_photographer):
         print("An error occurred: ", e)
 
 
-if __name__ == '__main__':
+async def main():
     while True:
         photo_url, photo_photographer = await fetch_photos()
         await send_photo_to_telegram(photo_url, photo_photographer)
-        await asyncio.sleep(3600) # wait for 1 hour before fetching and sending another photo
+        time.sleep(3600)
+
+if __name__ == '__main__':
+    asyncio.run(main())
+
