@@ -1,6 +1,6 @@
 import requests
 import json
-import time
+import asyncio
 from telegram import Bot
 import os
 from dotenv import load_dotenv
@@ -15,10 +15,13 @@ channel_id = os.environ.get("TELEGRAM_CHANNEL_ID")
 async def fetch_photos():
     url = f'https://api.pexels.com/v1/curated?per_page=1&page=1'
     headers = {'Authorization': api_key}
-    response = requests.get(url, headers=headers)
-    data = json.loads(response.text)
-    photo_url = data['photos'][0]['src']['original']
-    photo_photographer = data['photos'][0]['photographer']
+    try:
+        response = requests.get(url, headers=headers)
+        data = json.loads(response.text)
+        photo_url = data['photos'][0]['src']['original']
+        photo_photographer = data['photos'][0]['photographer']
+    finally:
+        response.close()
     return photo_url, photo_photographer
 
 
@@ -32,6 +35,6 @@ async def send_photo_to_telegram(photo_url, photo_photographer):
 
 if __name__ == '__main__':
     while True:
-        photo_url, photo_photographer = fetch_photos()
-        send_photo_to_telegram(photo_url, photo_photographer)
-        time.sleep(3600) # wait for 1 hour before fetching and sending another photo
+        photo_url, photo_photographer = await fetch_photos()
+        await send_photo_to_telegram(photo_url, photo_photographer)
+        await asyncio.sleep(3600) # wait for 1 hour before fetching and sending another photo
